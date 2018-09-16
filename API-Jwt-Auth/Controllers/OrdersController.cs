@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API_Jwt_Auth.Data.Entity;
 using API_Jwt_Auth.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -38,12 +39,15 @@ namespace API_Jwt_Auth.Controllers {
             }
         }
 
-        // GET api/<controller>/5
+        // GET api/<controller>/1
         [HttpGet("{id}")]
         public IActionResult Get(int id) {
             try {
-                _logger.LogInformation("Order has successfully fetched!");
-                return Ok(_repository.GetById(id));
+
+                var order = _repository.GetOrderById(id);
+                if (order != null) {
+                    return Ok(order);
+                } else { return NotFound(); }
 
             } catch (Exception ex) {
                 _logger.LogError($"Failed to fetch orders: {ex}");
@@ -54,7 +58,18 @@ namespace API_Jwt_Auth.Controllers {
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value) {
+        public IActionResult Post([FromBody]Order model) {
+            try {
+
+                _repository.Create(model);
+
+                return Created($"/api/orders/{model.Id}", model);
+            } catch (Exception ex) {
+
+                _logger.LogError($"Failed to create order: {ex}");
+                return BadRequest("Failed to create order");
+            }
+
         }
 
         // PUT api/<controller>/5
@@ -64,7 +79,20 @@ namespace API_Jwt_Auth.Controllers {
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        public void Delete(int id) {
+        public IActionResult Delete(int id) {
+            try {
+                _logger.LogInformation("Order has been removed");
+                var order = _repository.GetById(id);
+                if(order != null) {
+                    _repository.Delete(order);
+                    return Ok();
+                } else {
+                    return NotFound();
+                }
+            } catch (Exception ex) {
+                _logger.LogError($"Order didnt get removed: {ex}");
+                return BadRequest();
+            }
         }
     }
 }

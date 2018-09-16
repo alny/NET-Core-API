@@ -9,6 +9,7 @@ namespace API_Jwt_Auth.Data.Interfaces {
     public interface IOrderRepository : IRepository<Order> {
 
         IEnumerable<Order> GetAllOrders();
+        Order GetOrderById(int id);
 
     }
 }

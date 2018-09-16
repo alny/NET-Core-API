@@ -34,5 +34,22 @@ namespace API_Jwt_Auth.Data.Repository {
                 return null;
             }
         }
+
+        public Order GetOrderById(int id) {
+            try {
+
+                _logger.LogInformation("Order has been fetched!");
+
+                return _ctx.Orders
+                           .Include(o => o.Items)
+                           .ThenInclude(i => i.Product)
+                           .Where(o => o.Id == id)
+                           .FirstOrDefault();
+
+            } catch (Exception ex) {
+                _logger.LogError($"Failed to fetch order: {ex}");
+                return null;
+            }
+        }
     }
 }
