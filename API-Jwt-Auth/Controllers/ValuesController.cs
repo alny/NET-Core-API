@@ -1,17 +1,26 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API_Jwt_Auth.Data;
+using API_Jwt_Auth.Data.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Jwt_Auth.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase {
+        private readonly IProductRepository _repository;
+
+        public ValuesController(IProductRepository repository) {
+            _repository = repository;
+        }
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get() {
-            return new string[] { "value1", "value2" };
+        public ActionResult<IEnumerable> Get() {
+            return _repository.GetAllProducts().ToList();
         }
 
         // GET api/values/5

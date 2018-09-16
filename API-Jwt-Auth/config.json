@@ -1,0 +1,12 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft":  "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "MyConnectionString": "server=localhost\\SQLEXPRESS;Database=MyDb;Integrated Security=True;MultipleActiveResultSets=true"
+  }
+  
+}
