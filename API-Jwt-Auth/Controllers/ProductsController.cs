@@ -1,5 +1,9 @@
 ﻿using API_Jwt_Auth.Data.Entity;
 using API_Jwt_Auth.Data.Interfaces;
+using API_Jwt_Auth.ViewModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,6 +14,7 @@ using System.Threading.Tasks;
 namespace API_Jwt_Auth.Controllers {
 
     [Route("api/[Controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProductsController : Controller {
         private readonly IProductRepository _repository;
         private readonly ILogger<ProductsController> _logger;
@@ -30,6 +35,8 @@ namespace API_Jwt_Auth.Controllers {
                 return BadRequest("Failed to fetch products!");
             }
         }
+
+
 
     }
 }

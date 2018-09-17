@@ -25,7 +25,7 @@ namespace API_Jwt_Auth {
 
             using (var scope = scopeFactory.CreateScope()) {
                 var seeder = scope.ServiceProvider.GetService<SeederData>();
-                seeder.Seed();
+                seeder.SeedAsync().Wait();
             }
         }
 
