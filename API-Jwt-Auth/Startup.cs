@@ -7,6 +7,7 @@ using API_Jwt_Auth.Data;
 using API_Jwt_Auth.Data.Entity;
 using API_Jwt_Auth.Data.Interfaces;
 using API_Jwt_Auth.Data.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -42,8 +43,25 @@ namespace API_Jwt_Auth {
                             ValidIssuer = Configuration["Tokens:Issuer"],
                             ValidAudience = Configuration["Tokens:Audience"],
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-
                         };
+
+
+                        //cfg.Events = new JwtBearerEvents {
+                        //    OnMessageReceived = context =>
+                        //    {
+                        //        var accessToken = context.Request.Query["access_token"];
+
+                        //        // If the request is for our hub...
+                        //        var path = context.HttpContext.Request.Path;
+                        //        if (!string.IsNullOrEmpty(accessToken) &&
+                        //            (path.StartsWithSegments("/chat"))) {
+                        //            // Read the token out of the query string
+                        //            context.Token = accessToken;
+                        //        }
+                        //        return Task.CompletedTask;
+                        //    }
+                        //};
+
 
                     });
 
@@ -56,6 +74,7 @@ namespace API_Jwt_Auth {
             services.AddTransient<SeederData>();
             services.AddMvc()
                 .AddJsonOptions(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,9 +82,15 @@ namespace API_Jwt_Auth {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseAuthentication();
-            app.UseMvc(cfg => {
 
+            app.UseStaticFiles();
+            app.UseAuthentication();
+
+            app.UseSignalR(routes => {
+                routes.MapHub<ChatHub>("/chat");
+            });
+
+            app.UseMvc(cfg => {
                 cfg.MapRoute("Default",
                     "{controller}/{action}/{id?}"
                     );

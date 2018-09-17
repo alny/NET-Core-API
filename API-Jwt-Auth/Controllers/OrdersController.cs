@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API_Jwt_Auth.Data.Entity;
 using API_Jwt_Auth.Data.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace API_Jwt_Auth.Controllers {
 
     [Route("api/[Controller]")]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrdersController : Controller {
 
         private readonly IOrderRepository _repository;
